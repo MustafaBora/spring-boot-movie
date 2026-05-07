@@ -39,22 +39,16 @@ public class MovieController {
     public List<HYFResponseMovieDTO> findByDirector(@RequestParam String director) {
         return movieService.findByDirector(director);
     }
-
-
-
-
-
-
-
-
-
-
-
-
+/*
     // GET /movies — paginated list
     @GetMapping
     public Page<MovieResponseDTO> getAllMovies(@PageableDefault(size = 10) Pageable pageable) {
         return movieService.getAllMovies(pageable);
+    }
+*/
+    @GetMapping
+    public List<Movie> getAllMovies() {
+        return movieService.getAll();
     }
 
     // POST /movies — create movie

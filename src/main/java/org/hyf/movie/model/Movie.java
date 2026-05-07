@@ -1,5 +1,6 @@
 package org.hyf.movie.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
@@ -40,6 +41,8 @@ public class Movie {
     private LocalDateTime createdAt;
 
     private Long budgetUsd;
+
+    @JsonBackReference
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Review> reviews = new ArrayList<>();
 }
