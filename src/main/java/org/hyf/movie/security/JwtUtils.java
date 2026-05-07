@@ -27,6 +27,8 @@ public class JwtUtils {
             @Value("${app.jwt.expiration}") long expiration
     ) {
         // Decode the Base64-encoded secret into raw bytes and build an HMAC-SHA256 key
+        // This will do length checks and throw an exception if the key is too weak
+        // Why don't we use a simple string? Because the key must be of sufficient length for security, and using a Base64-encoded string allows us to easily generate and manage keys of the correct length without worrying about character encoding issues.
         this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
         this.expiration = expiration;
     }
@@ -65,15 +67,18 @@ public class JwtUtils {
 
     /**
      * Extracts the subject (email) from a valid token.
+     * Throws an exception if the token is invalid (bad signature, malformed, expired, etc.).
      */
     public String getSubject(String token) {
-        return parse(token).getBody().getSubject();
+        Claims body = parse(token).getBody();
+        System.out.println(body.getSubject() );
+        return body.getSubject();
     }
 
     private Jws<Claims> parse(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
-                .parseClaimsJws(token);
+                .parseClaimsJws(token); // This will throw an exception if the token is invalid (bad signature, malformed, expired, etc.)
     }
 }
