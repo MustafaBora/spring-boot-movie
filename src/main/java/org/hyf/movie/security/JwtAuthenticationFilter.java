@@ -31,6 +31,11 @@ public class JwtAuthenticationFilter implements Filter {
         this.userRepository = userRepository;
     }
 
+    // This method is called for every HTTP request. It checks for a Bearer token,
+    // validates it, and if valid, loads the user and sets the authentication.
+    // if not valid, it simply continues without setting authentication, allowing public routes to work.
+    // if we have returned a 401 Unothorized from the filter, we would have to stop the chain and not call chain.doFilter(),
+    // but we have public routes that should work even without authentication, so we don't want to block the request here.
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
@@ -48,6 +53,11 @@ public class JwtAuthenticationFilter implements Filter {
                 if (user != null) {
                     // Prefix the role with "ROLE_" so that hasRole("ADMIN") works correctly
                     var authority = new SimpleGrantedAuthority("ROLE_" + user.getRole().name());
+                    // if the user had multiple roles, we would create a list of authorities here instead of just one
+                    // the code would look like this:
+                    // List<GrantedAuthority> authorities = user.getRoles().stream()
+                    //         .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
+                    //         .collect(Collectors.toList());
 
                     UsernamePasswordAuthenticationToken auth =
                             new UsernamePasswordAuthenticationToken(
