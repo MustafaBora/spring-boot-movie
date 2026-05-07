@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/movies")
+@RequestMapping("/api/v1/movies")
 @Validated  // enables validation on @PathVariable and @RequestParam (README32)
 public class MovieController {
 
@@ -24,7 +24,7 @@ public class MovieController {
     private final MovieMapper movieMapper;
 
     public MovieController(MovieService movieService,
-                           MovieMapper mapper) {
+                            MovieMapper mapper) {
         this.movieService = movieService;
         this.movieMapper = mapper;
     }

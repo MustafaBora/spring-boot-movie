@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
  * so no token is required to reach them.
  */
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
 
     private final UserService userService;
