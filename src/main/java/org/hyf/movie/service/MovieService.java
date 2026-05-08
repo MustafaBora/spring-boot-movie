@@ -1,9 +1,9 @@
 package org.hyf.movie.service;
 
 import org.hyf.movie.dto.*;
+import org.hyf.movie.exception.MovieAlreadyExistsException;
 import org.hyf.movie.exception.MovieNotFoundException;
 import org.hyf.movie.exception.ReviewNotFoundException;
-import org.hyf.movie.mapper.HYFMovieMapper;
 import org.hyf.movie.mapper.MovieMapper;
 import org.hyf.movie.mapper.ReviewMapper;
 import org.hyf.movie.model.Movie;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,18 +27,15 @@ public class MovieService {
     private final ReviewRepository reviewRepository;
     private final MovieMapper movieMapper;
     private final ReviewMapper reviewMapper;
-    private final HYFMovieMapper hyfMapper;
 
     public MovieService(MovieRepository movieRepository,
                         ReviewRepository reviewRepository,
                         MovieMapper movieMapper,
-                        ReviewMapper reviewMapper,
-                        HYFMovieMapper hyfMapper) {
+                        ReviewMapper reviewMapper) {
         this.movieRepository = movieRepository;
         this.reviewRepository = reviewRepository;
         this.movieMapper = movieMapper;
         this.reviewMapper = reviewMapper;
-        this.hyfMapper = hyfMapper;
     }
 
     public List<Movie> getAll() {
@@ -50,28 +46,6 @@ public class MovieService {
         return movieRepository.save(movie);
     }
 
-    public HYFResponseMovieDTO findById(Long id) {
-        Optional<Movie> byId = movieRepository.findById(id);
-        Movie m = byId.orElseThrow(() -> new MovieNotFoundException(id));
-        return hyfMapper.toResponseDTO(m);
-    }
-
-    public List<HYFResponseMovieDTO> findByDirector(String director) {
-        List<Movie> byDirector = movieRepository.findByDirector(director);
-        List<HYFResponseMovieDTO> mapped = byDirector.stream().map(hyfMapper::toResponseDTO).toList();
-        return mapped;
-    }
-
-
-
-
-
-
-
-
-
-
-
     @Transactional(readOnly = true)
     public Page<MovieResponseDTO> getAllMovies(Pageable pageable) {
         return movieRepository.findAll(pageable).map(movieMapper::toResponseDTO);
@@ -79,7 +53,9 @@ public class MovieService {
 
     public MovieResponseDTO createMovie(MovieRequestDTO dto) {
         Movie movie = movieMapper.toEntity(dto);
-        //TODO check if the title is existent already, if so, throw MovieAlreadyExistsExeption
+        if(movieRepository.existsMovieByTitle(movie.getTitle())) {
+            throw new MovieAlreadyExistsException(movie.getTitle());
+        }
         MovieResponseDTO movieResponseDTO = movieMapper.toResponseDTO(movieRepository.save(movie));
         return movieResponseDTO;
     }
@@ -131,13 +107,6 @@ public class MovieService {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ReviewNotFoundException(reviewId));
         movie.getReviews().remove(review);
-    }
-
-    @Transactional(readOnly = true)
-    public List<MovieResponseDTO> getTopRated() {
-        return movieRepository.findTopRated(PageRequest.of(0, 5)).stream()
-                .map(movieMapper::toResponseDTO)
-                .collect(Collectors.toList());
     }
 
 }

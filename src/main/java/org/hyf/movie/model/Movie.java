@@ -10,7 +10,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hyf.movie.validations.AlisanCustomValidationRule;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
