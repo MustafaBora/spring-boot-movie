@@ -45,13 +45,12 @@ public class MovieMapper {
         return dto;
     }
 
-    /*
-    //do this later
     public void updateFromPatch(MoviePatchDTO dto, Movie movie) {
+        //here we only update the fields that are not null in the dto, so that we can support partial updates
+        //we could also use a library like MapStruct to do this automatically, but for simplicity we do it manually here
+        //validations can be done with annotations in the DTO, but we can also do them here if we need to check for business logic that cannot be expressed with annotations
         if (dto.getTitle() != null) movie.setTitle(dto.getTitle());
         if (dto.getDirector() != null) movie.setDirector(dto.getDirector());
         if (dto.getReleaseYear() != null) movie.setReleaseYear(dto.getReleaseYear());
     }
-
-     */
 }

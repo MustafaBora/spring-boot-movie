@@ -15,4 +15,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     List<Movie> findTopRated(Pageable pageable);
 
     List<Movie> findByDirector(String director);
+
+    boolean existsByTitle(String title);
+
 }
