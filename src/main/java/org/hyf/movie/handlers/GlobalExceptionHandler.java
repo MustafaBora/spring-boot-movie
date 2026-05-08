@@ -1,6 +1,7 @@
 package org.hyf.movie.handlers;
 
 import jakarta.validation.ConstraintViolationException;
+import org.hyf.movie.exception.MovieAlreadyExistsException;
 import org.hyf.movie.exception.MovieNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -36,6 +37,14 @@ public class GlobalExceptionHandler
         ex.getConstraintViolations().forEach(v ->
                 errors.put(v.getPropertyPath().toString(), v.getMessage()));
         return errors;
+    }
+
+    // --- Custom exception handlers ---
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(MovieAlreadyExistsException.class)
+    public Map<String, String> handleMovieAlreadyExists(MovieAlreadyExistsException ex)
+    {
+        return Map.of("error", ex.getMessage());
     }
 
     // --- Custom exception handlers ---
