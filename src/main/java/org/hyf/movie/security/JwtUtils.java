@@ -33,6 +33,13 @@ public class JwtUtils {
         this.expiration = expiration;
     }
 
+    private Jws<Claims> parse(String token) {
+        return Jwts.parserBuilder()
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(token); // This will throw an exception if the token is invalid (bad signature, malformed, expired, etc.)
+    }
+
     /**
      * Generates a signed JWT token.
      *
@@ -44,11 +51,11 @@ public class JwtUtils {
         Date now = new Date();
         Date exp = new Date(now.getTime() + expiration);
 
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(now)
-                .setExpiration(exp)
+        return Jwts.builder()   //(io.jsonwebtoken.Jwts) is a utility class for building and parsing JWTs. It provides a fluent API for constructing JWTs with various claims and signing them.
+                .setClaims(claims)  // sets the claims (payload) of the JWT. The claims are a map of key-value pairs that can include standard claims like "sub" (subject), "exp" (expiration), as well as custom claims like "userId" or "role". In this case, we are passing a map of claims to be included in the token.
+                .setSubject(subject)    // sets the "sub" (subject) claim of the JWT, which is typically used to identify the principal that the token represents (e.g., the user's email). This is a standard claim defined in the JWT specification.
+                .setIssuedAt(now)   // sets the "iat" (issued at) claim to the current time, indicating when the token was issued.
+                .setExpiration(exp) // sets the "exp" (expiration) claim to a future time calculated by adding the configured expiration duration to the current time. This indicates when the token will expire and should no longer be accepted.
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -75,10 +82,4 @@ public class JwtUtils {
         return body.getSubject();
     }
 
-    private Jws<Claims> parse(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token); // This will throw an exception if the token is invalid (bad signature, malformed, expired, etc.)
-    }
 }
