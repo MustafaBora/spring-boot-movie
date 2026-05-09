@@ -1,12 +1,15 @@
 package org.hyf.movie.aspects;
 
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Aspect
-@Component
+@Component  // marking it as aspect already makes it a Spring bean, so no need for @ComponentScan,
+// but it's common to include @Component for clarity and to avoid issues if the aspect is in a different package.
 public class LoggerAspect {
 
     // @Around must return Object so the actual controller return value is not lost
@@ -14,12 +17,12 @@ public class LoggerAspect {
     public Object logControllerMethodCalls(ProceedingJoinPoint joinPoint) throws Throwable {
         String method = joinPoint.getSignature().toShortString();
         long start = System.currentTimeMillis();
-        System.out.println("[LOG] Calling: " + method);
+        log.info("[LOG] Calling: {}", method);
 
         Object result = joinPoint.proceed(); // execute the actual method
 
         long duration = System.currentTimeMillis() - start;
-        System.out.println("[LOG] Finished: " + method + " (" + duration + "ms)");
+        log.info("[LOG] Finished: {} ({}ms)", method, duration);
         return result;
     }
 }

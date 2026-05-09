@@ -6,6 +6,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.Map;
@@ -30,6 +31,8 @@ public class JwtUtils {
         // This will do length checks and throw an exception if the key is too weak
         // Why don't we use a simple string? Because the key must be of sufficient length for security, and using a Base64-encoded string allows us to easily generate and manage keys of the correct length without worrying about character encoding issues.
         this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+        //if we wanted to use a simple string
+        //this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.expiration = expiration;
     }
 
@@ -38,6 +41,7 @@ public class JwtUtils {
             .setSigningKey(key)
             .build()
             .parseClaimsJws(token); // This will throw an exception if the token is invalid (bad signature, malformed, expired, etc.)
+//        (UnsupportedJwtException) MalformedJwt and other exceptions
     }
 
     /**

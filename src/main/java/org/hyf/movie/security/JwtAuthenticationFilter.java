@@ -23,8 +23,8 @@ import java.util.List;
 @Component
 public class JwtAuthenticationFilter implements Filter {
 
-    private final JwtUtils jwtUtils;
-    private final UserRepository userRepository;
+    private final JwtUtils jwtUtils;    // utility class for validating and parsing JWT tokens. We could have used a library like jjwt instead of writing our own, but it's simple enough to implement ourselves for this project.
+    private final UserRepository userRepository;    // we need to load the user from the database to get their role
 
     public JwtAuthenticationFilter(JwtUtils jwtUtils, UserRepository userRepository) {
         this.jwtUtils = jwtUtils;
@@ -61,7 +61,8 @@ public class JwtAuthenticationFilter implements Filter {
 
                     UsernamePasswordAuthenticationToken auth =
                             new UsernamePasswordAuthenticationToken(
-                                    user,          // principal — the logged-in User
+                                    user,       // principal — the logged-in User
+                                    // credentials means the password, but we don't have it here and it's not needed after authentication, so we can set it to null
                                     null,          // credentials — not needed after authentication
                                     List.of(authority)
                             );
