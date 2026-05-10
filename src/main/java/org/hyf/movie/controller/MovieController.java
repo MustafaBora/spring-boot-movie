@@ -18,12 +18,9 @@ import java.util.List;
 public class MovieController {
 
     private final MovieService movieService;
-    private final MovieMapper movieMapper;
 
-    public MovieController(MovieService movieService,
-                            MovieMapper mapper) {
+    public MovieController(MovieService movieService) {
         this.movieService = movieService;
-        this.movieMapper = mapper;
     }
 
     @GetMapping
