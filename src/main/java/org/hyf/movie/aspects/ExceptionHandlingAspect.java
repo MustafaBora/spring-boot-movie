@@ -1,5 +1,6 @@
 package org.hyf.movie.aspects;
 
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
  * (@RestControllerAdvice). This aspect only adds logging — it does not intercept
  * or modify the exception flow.
  */
+@Slf4j
 @Aspect
 @Component
 public class ExceptionHandlingAspect {
@@ -23,7 +25,7 @@ public class ExceptionHandlingAspect {
     )
     public void logServiceException(JoinPoint joinPoint, Throwable ex) {
         String method = joinPoint.getSignature().toShortString();
-        System.out.println("[EXCEPTION] " + method + " threw: "
+        log.error("[EXCEPTION] " + method + " threw: "
                 + ex.getClass().getSimpleName() + " — " + ex.getMessage());
     }
 }
