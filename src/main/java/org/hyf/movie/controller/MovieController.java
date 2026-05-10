@@ -18,12 +18,9 @@ import java.util.List;
 public class MovieController {
 
     private final MovieService movieService;
-    private final MovieMapper movieMapper;
 
-    public MovieController(MovieService movieService,
-                            MovieMapper mapper) {
+    public MovieController(MovieService movieService) {
         this.movieService = movieService;
-        this.movieMapper = mapper;
     }
 
     @GetMapping
@@ -34,10 +31,10 @@ public class MovieController {
     // POST /movies — create movie
     @PostMapping
     public ResponseEntity<MovieResponseDTO> createMovie(@Valid @RequestBody MovieRequestDTO dto) {
+
         return ResponseEntity.status(HttpStatus.CREATED).body(movieService.createMovie(dto));
     }
 
-    // GET /movies/{id} — movie with reviews
     @GetMapping("/{id}")
     public MovieResponseDTO getMovie(@PathVariable Long id) {
         return movieService.getMovieById(id);
@@ -55,13 +52,11 @@ public class MovieController {
         return ResponseEntity.noContent().build();
     }
 
-    // GET /movies/{id}/reviews
     @GetMapping("/{id}/reviews")
     public List<ReviewResponseDTO> getReviews(@PathVariable Long id) {
         return movieService.getReviews(id);
     }
 
-    // POST /movies/{id}/reviews
     @PostMapping("/{id}/reviews")
     public ResponseEntity<ReviewResponseDTO> addReview(@PathVariable Long id,
                                                        @RequestBody ReviewRequestDTO dto) {
