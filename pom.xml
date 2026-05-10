@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -44,11 +44,19 @@
 			<version>${mapstruct.version}</version>
 		</dependency>
 
+		<!-- This dependency is for Spring Security, which is a powerful and highly customizable authentication and access-control framework -->
+		<!-- JWT authentication is not only Spring Security can do, it can also do session-based authentication,
+		 we could also do certificate-based authentication, but JWT is more suitable for our project because it is stateless and it can be easily used in a distributed system.
+		 x509 certificate-based authentication is not suitable for our project because it is stateful and it requires a lot of configuration and maintenance. -->
+		<!-- another method apart from session based and certificate based authentication or OAuth2 or API Keys or JWT or basic authentication is to use a custom authentication mechanism -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-
+		<!-- Those dependencies below are for JWT support -->
+		<!-- Spring built in JWT support is not good, so we use jjwt instead -->
+		<!-- The problem in built in JWT support is that it does not support JWK, which is a standard for representing keys in JSON format -->
+		<!-- JWK is widely used in OAuth2 and OpenID Connect, and it is also used in our project for representing the public key of the authorization server -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
@@ -89,17 +97,17 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
 					<annotationProcessorPaths>
-					<path>
-						<groupId>org.projectlombok</groupId>
-						<artifactId>lombok</artifactId>
-						<version>${lombok.version}</version>
-					</path>
-					<path>
-						<groupId>org.mapstruct</groupId>
-						<artifactId>mapstruct-processor</artifactId>
-						<version>${mapstruct.version}</version>
-					</path>
-				</annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
+						</path>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${mapstruct.version}</version>
+						</path>
+					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 		</plugins>
