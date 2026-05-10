@@ -3,15 +3,23 @@ package org.hyf.movie.mapper;
 import org.hyf.movie.dto.ReviewRequestDTO;
 import org.hyf.movie.dto.ReviewResponseDTO;
 import org.hyf.movie.model.Review;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.springframework.stereotype.Component;
 
-@Mapper(componentModel = "spring")
-public interface ReviewMapper {
+@Component
+public class ReviewMapper {
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "movie", ignore = true)
-    Review toEntity(ReviewRequestDTO dto);
+    public Review toEntity(ReviewRequestDTO dto) {
+        Review review = new Review();
+        review.setRating(dto.getRating());
+        review.setComment(dto.getComment());
+        return review;
+    }
 
-    ReviewResponseDTO toResponseDTO(Review review);
+    public ReviewResponseDTO toResponseDTO(Review review) {
+        ReviewResponseDTO dto = new ReviewResponseDTO();
+        dto.setId(review.getId());
+        dto.setRating(review.getRating());
+        dto.setComment(review.getComment());
+        return dto;
+    }
 }

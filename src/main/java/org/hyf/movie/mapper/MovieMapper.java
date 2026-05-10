@@ -4,35 +4,54 @@ import org.hyf.movie.dto.MoviePatchDTO;
 import org.hyf.movie.dto.MovieRequestDTO;
 import org.hyf.movie.dto.MovieResponseDTO;
 import org.hyf.movie.model.Movie;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.springframework.stereotype.Component;
 
-@Mapper(componentModel = "spring", uses = ReviewMapper.class)
-public interface MovieMapper {
+import java.util.stream.Collectors;
 
-    // id, internalNotes, createdAt, budgetUsd, reviews are ignored during creation
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "internalNotes", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "budgetUsd", ignore = true)
-    @Mapping(target = "reviews", ignore = true)
-    Movie toEntity(MovieRequestDTO dto);
+@Component
+public class MovieMapper {
 
-    // reviews (List<Review> -> List<ReviewResponseDTO>) is handled automatically via uses = ReviewMapper.class
-    MovieResponseDTO toResponseDTO(Movie movie);
+    private final ReviewMapper reviewMapper;
 
-    MovieRequestDTO toRequestDTO(Movie movie);
+    public MovieMapper(ReviewMapper reviewMapper) {
+        this.reviewMapper = reviewMapper;
+    }
 
-    // During patch update, we want to ignore null values in the DTO and also ignore certain fields that should not be updated
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "internalNotes", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "budgetUsd", ignore = true)
-    // We also ignore reviews here because we don't want to update the reviews list when patching a movie. Reviews should be managed separately via the ReviewController.
-    @Mapping(target = "reviews", ignore = true)
-    void updateFromPatch(MoviePatchDTO dto, @MappingTarget Movie movie);
+    public Movie toEntity(MovieRequestDTO dto) {
+        Movie movie = new Movie();
+        movie.setTitle(dto.getTitle());
+        movie.setDirector(dto.getDirector());
+        movie.setReleaseYear(dto.getReleaseYear());
+        return movie;
+    }
+
+    public MovieResponseDTO toResponseDTO(Movie movie) {
+        MovieResponseDTO dto = new MovieResponseDTO();
+        dto.setId(movie.getId());
+        dto.setTitle(movie.getTitle());
+        dto.setDirector(movie.getDirector());
+        dto.setReleaseYear(movie.getReleaseYear());
+        dto.setReviews(movie.getReviews().stream()
+                .map(reviewMapper::toResponseDTO)
+                .collect(Collectors.toList()));
+        return dto;
+    }
+
+
+
+    public MovieRequestDTO toRequestDTO(Movie movie) {
+        MovieRequestDTO dto = new MovieRequestDTO();
+        dto.setTitle(movie.getTitle());
+        return dto;
+    }
+
+    /*
+    //do this later
+    public void updateFromPatch(MoviePatchDTO dto, Movie movie) {
+        if (dto.getTitle() != null) movie.setTitle(dto.getTitle());
+        if (dto.getDirector() != null) movie.setDirector(dto.getDirector());
+        if (dto.getReleaseYear() != null) movie.setReleaseYear(dto.getReleaseYear());
+    }
+
+     */
 }
