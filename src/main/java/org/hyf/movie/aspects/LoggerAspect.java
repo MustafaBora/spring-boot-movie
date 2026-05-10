@@ -17,12 +17,11 @@ public class LoggerAspect {
     public Object logControllerMethodCalls(ProceedingJoinPoint joinPoint) throws Throwable {
         String method = joinPoint.getSignature().toShortString();
         long start = System.currentTimeMillis();
-        log.info("[LOG] Calling: {}", method);
-
+        log.warn("[LOG] Calling: " + method);
         Object result = joinPoint.proceed(); // execute the actual method
 
         long duration = System.currentTimeMillis() - start;
-        log.info("[LOG] Finished: {} ({}ms)", method, duration);
+        log.warn("[LOG] Finished: " + method + " (" + duration + " ms)");
         return result;
     }
 }
