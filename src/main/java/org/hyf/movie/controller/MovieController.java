@@ -31,8 +31,12 @@ public class MovieController {
     // POST /movies — create movie
     @PostMapping
     public ResponseEntity<MovieResponseDTO> createMovie(@Valid @RequestBody MovieRequestDTO dto) {
-
         return ResponseEntity.status(HttpStatus.CREATED).body(movieService.createMovie(dto));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<MovieResponseDTO> patchMovie(@PathVariable Long id, @RequestBody MoviePatchDTO dto) {
+        return ResponseEntity.status(HttpStatus.OK).body(movieService.patchMovie(id, dto));
     }
 
     @GetMapping("/{id}")

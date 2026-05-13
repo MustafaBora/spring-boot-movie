@@ -1,0 +1,3 @@
+2026-05-13T00:01:54.854+02:00  WARN 34080 --- [movie] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=3h31s948ms274µs700ns).
+2026-05-13T09:10:34.126+02:00  WARN 34080 --- [movie] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=9h8m47s12ms780µs800ns).
+2026-05-13T09:28:05.710+02:00  WARN 34080 --- [movie] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m31s595ms69µs600ns).

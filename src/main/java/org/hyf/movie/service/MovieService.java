@@ -11,7 +11,6 @@ import org.hyf.movie.model.Review;
 import org.hyf.movie.repository.MovieRepository;
 import org.hyf.movie.repository.ReviewRepository;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,22 +59,19 @@ public class MovieService {
         return movieResponseDTO;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) // This is important to avoid unnecessary locking and improve performance when only reading data
     public MovieResponseDTO getMovieById(Long id) {
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(() -> new MovieNotFoundException(id));
         return movieMapper.toResponseDTO(movie);
     }
 
-    /*
-    Do this later
     public MovieResponseDTO patchMovie(Long id, MoviePatchDTO dto) {
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(() -> new MovieNotFoundException(id));
         movieMapper.updateFromPatch(dto, movie);
         return movieMapper.toResponseDTO(movieRepository.save(movie));
     }
-    */
 
     public void deleteMovie(Long id) {
         if (!movieRepository.existsById(id)) {
